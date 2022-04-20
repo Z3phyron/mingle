@@ -91,8 +91,8 @@ const Profile = () => {
 
 const Cont = styled.div`
   width: 80%;
-  @media screen and (max-width: 700px) {
-    grid-template-columns: repeat(1, 1fr);
+  @media screen and (max-width: 900px) {
+    width: 100%;
   }
 `;
 
@@ -118,6 +118,7 @@ const CoverPhoto = styled.div`
   img {
     object-fit: cover;
     width: 100%;
+    height: 100%;
   }
   @media screen and (max-width: 700px) {
     grid-template-columns: repeat(1, 1fr);
@@ -128,17 +129,34 @@ const User = styled.div`
   display: flex;
   align-items: center;
   position: absolute;
-  bottom: 25px;
+  bottom: 30px;
   left: 40px;
+  @media screen and (max-width: 700px) {
+    bottom: 35px;
+    left: 30px;
+  }
   .avatar {
     width: 100px;
     height: 100px;
     border: 5px solid rgba(255, 255, 255, 0.18);
+
+    @media screen and (max-width: 900px) {
+      width: 70px;
+      height: 70px;
+    }
   }
   .user_info {
     margin-left: 10px;
     color: var(--white);
     letter-spacing: 1px;
+    @media screen and (max-width: 900px) {
+   .user_name {
+     font-size: 15px;
+   }
+   .handle {
+     font-size: 10px;
+   }
+    }
   }
 `;
 

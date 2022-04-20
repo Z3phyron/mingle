@@ -14,6 +14,10 @@ export const Tab = styled.button`
     background: none;
     position: relative;
     outline: none;
+    @media (max-width: 900px) {
+      padding: 10px 15px;
+      margin: 19px 0 0;
+    }
     .icon {
       margin-right: 3px;
       font-size: 20px;
@@ -73,6 +77,10 @@ export const Menu = styled.div`
   /* grid-template-columns: repeat(2, 1fr); */
   align-items: center;
 
+  @media (max-width: 900px) {
+    padding: 5px 10px;
+  }
+
   /* flex-wrap: wrap; */
 
   .menu {
@@ -80,6 +88,10 @@ export const Menu = styled.div`
     justify-content: center;
     align-items: center;
     margin: auto;
+    @media (max-width: 900px) {
+      justify-content: flex-start;
+      margin-left: 80px;
+    }
   }
 
   .edit {
@@ -97,6 +109,11 @@ export const Menu = styled.div`
     backdrop-filter: blur(2.1px);
     -webkit-backdrop-filter: blur(2.1px);
     transition: all 0.5s;
+    @media (max-width: 900px) {
+      font-size: 10px;
+      right: 3%;
+      bottom: 20px;
+    }
 
     .icon {
       margin-right: 10px;
@@ -106,8 +123,6 @@ export const Menu = styled.div`
       background: var(--blue);
     }
   }
-
-
 
   @media (max-width: 1270px) {
     font-size: 13px;

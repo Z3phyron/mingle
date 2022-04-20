@@ -31,7 +31,7 @@ const Navbar = () => {
         </div>
       </Search>
       <User>
-        <Avatar src={user} sx={{ width: 50, height: 50 }} />
+        <Avatar src={user} className='avatar' />
         <div className="user_info">
           <h4 className="name">Damian Ricketts</h4>
           <small>@Abyss_Returner</small>
@@ -64,12 +64,13 @@ const Nav = styled.nav`
     box-shadow: 0 4px 30px var(--light-blue);
     backdrop-filter: blur(2.7px);
     -webkit-backdrop-filter: blur(2.7px);
-    height: 15vh;
+    height: 10vh;
     padding: 2% 5%;
   }
 
   @media screen and (max-width: 900px) {
     grid-gap: 20px;
+    grid-template-columns: 18% auto 10%;
   }
 `;
 const Logo = styled.div`
@@ -151,6 +152,15 @@ grid-gap: 10px; */
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  .avatar {
+    width: 50px;
+    height: 50px;
+    @media screen and (max-width: 900px) {
+      width: 40px;
+      height: 40px;
+    }
+  }
 
   .user_info {
     margin-left: 10px;

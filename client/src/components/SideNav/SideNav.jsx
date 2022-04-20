@@ -67,10 +67,10 @@ const Cont = styled.div`
   @media screen and (max-width: 900px) {
     bottom: 0;
     right: 0;
-    top: 90vh;
-    height: 10vh;
+    top: 93vh;
+    height: 7vh;
     width: 100%;
-    padding-top: 20px;
+    padding-top: 12px;
     /* From https://css.glass */
     background: rgba(36, 199, 230, 0.14);
 
