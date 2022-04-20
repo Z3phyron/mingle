@@ -3,14 +3,24 @@ import styled from "styled-components";
 import Avatar from "@mui/material/Avatar";
 import user from "../../assets/dp_4.jpg";
 import { HiOutlineDotsHorizontal } from "react-icons/hi";
-import { GrSend } from "react-icons/gr";
+import { BiSend } from "react-icons/bi";
 import { BsChatDots } from "react-icons/bs";
 import { IoIosHeartEmpty, IoIosHeart, IoMdShare } from "react-icons/io";
 import WordLimit from "react-word-limit";
 import post from "../../assets/pexels-mikotoraw-photographer-3594262.jpg";
+import Popper from "@mui/material/Popper";
+import { Link } from "react-router-dom";
 
 const Feed = () => {
   const [liked, setLiked] = useState(true);
+      const [anchorEl, setAnchorEl] = useState(null);
+
+      const handleClick = (event) => {
+        setAnchorEl(anchorEl ? null : event.currentTarget);
+      };
+
+      const open = Boolean(anchorEl);
+      const id = open ? "simple-popper" : undefined;
 
   return (
     <Card>
@@ -24,7 +34,17 @@ const Feed = () => {
         </div>
 
         <div className="options">
-          <HiOutlineDotsHorizontal className="icon" />
+          <HiOutlineDotsHorizontal className="icon" onClick={handleClick} />
+          <Popper id={id} open={open} anchorEl={anchorEl}>
+            <PopBox>
+              <li>
+                <Link to="/">Edit</Link>
+              </li>
+              <li>
+                <Link to="/">Delete</Link>
+              </li>
+            </PopBox>
+          </Popper>
         </div>
       </User>
 
@@ -53,7 +73,7 @@ const Feed = () => {
           <input type="text" />
         </div>
         <button type="submit">
-          <GrSend className="icon" />
+          <BiSend className="snd-icon" />
         </button>
       </Comment>
     </Card>
@@ -203,10 +223,39 @@ const Comment = styled.form`
     text-align: center;
     align-items: center;
     color: #fff;
-    .icon {
-      color: #fff;
+    .snd-icon {
+      color: var(--white);
       font-size: 16px;
     }
   }
 `;
+
+
+const PopBox = styled.ul`
+  width: auto;
+  height: auto;
+  /* From https://css.glass */
+  background: var(--light-blue);
+  border-radius: 10px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(7.6px);
+  -webkit-backdrop-filter: blur(7.6px);
+  border: none;
+  outline: none;
+  margin-left: -20px;
+  margin-top: 5px;
+
+  padding: 10px 15px;
+
+  transition: all 0.5s;
+
+  display: grid;
+  grid-gap: 20px;
+
+  a {
+    color: var(--white);
+  }
+`;
+
+
 export default Feed;

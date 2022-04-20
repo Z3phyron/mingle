@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import user from "../../assets/dp_1.jpg";
 
+
 const Friend = (props) => {
-    const [stat, setStat] = useState(false)
+  const [stat, setStat] = useState(false)
+ 
 
     const {time} = props
   return (
@@ -70,5 +72,7 @@ const Cont = styled.div`
       display: none;
   }
 `;
+
+
 
 export default Friend;

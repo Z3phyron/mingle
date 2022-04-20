@@ -1,22 +1,31 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { RiSearchLine } from "react-icons/ri";
 import Avatar from "@mui/material/Avatar";
 import user from "../../assets/dp_4.jpg";
+import Popper from "@mui/material/Popper";
 
 const Navbar = () => {
-      const [navbar, setNavbar] = useState(false);
+  const [navbar, setNavbar] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
-      const changeBackground = () => {
-        if (window.scrollY >= 30) {
-          setNavbar(true);
-        } else {
-          setNavbar(false);
-        }
-      };
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
 
-      window.addEventListener("scroll", changeBackground);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
+
+  const changeBackground = () => {
+    if (window.scrollY >= 30) {
+      setNavbar(true);
+    } else {
+      setNavbar(false);
+    }
+  };
+
+  window.addEventListener("scroll", changeBackground);
   return (
     <Nav className={navbar ? "isActive" : ""}>
       <Logo>
@@ -31,11 +40,21 @@ const Navbar = () => {
         </div>
       </Search>
       <User>
-        <Avatar src={user} className='avatar' />
+        <Avatar src={user} className="avatar" onClick={handleClick} />
         <div className="user_info">
           <h4 className="name">Damian Ricketts</h4>
           <small>@Abyss_Returner</small>
         </div>
+        <Popper id={id} open={open} anchorEl={anchorEl}>
+          <PopBox>
+            <li>
+              <Link to="/">profile</Link>
+            </li>
+            <li>
+              <Link to="/">logout</Link>
+            </li>
+          </PopBox>
+        </Popper>
       </User>
     </Nav>
   );
@@ -64,13 +83,16 @@ const Nav = styled.nav`
     box-shadow: 0 4px 30px var(--light-blue);
     backdrop-filter: blur(2.7px);
     -webkit-backdrop-filter: blur(2.7px);
-    height: 10vh;
+    height: 15vh;
     padding: 2% 5%;
   }
 
   @media screen and (max-width: 900px) {
     grid-gap: 20px;
     grid-template-columns: 18% auto 10%;
+    &.isActive {
+      height: 10vh;
+    }
   }
 `;
 const Logo = styled.div`
@@ -146,9 +168,7 @@ const Search = styled.div`
 `;
 
 const User = styled.div`
-  /* display: grid;
-grid-template-columns: repeat(2, 1fr);
-grid-gap: 10px; */
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -188,6 +208,32 @@ grid-gap: 10px; */
     .user_info {
       display: none;
     }
+  }
+`;
+
+const PopBox = styled.ul`
+  width: auto;
+  height: auto;
+  /* From https://css.glass */
+  background: var(--light-blue);
+  border-radius: 10px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(7.6px);
+  -webkit-backdrop-filter: blur(7.6px);
+  border: none;
+  outline: none;
+  margin-left: 30px;
+  margin-top: 5px;
+
+  padding: 10px 15px;
+
+  transition: all 0.5s;
+
+  display: grid;
+  grid-gap: 20px;
+
+  a {
+    color: var(--white);
   }
 `;
 
