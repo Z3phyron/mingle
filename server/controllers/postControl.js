@@ -46,7 +46,7 @@ const allUserPosts = asyncHandler(async (req, res) => {
   try {
     const getPosts = await Post.find({ user: req.user._id }).populate(
       "user",
-      "userName profile_pic"
+      "userName profile_pic firstName"
     );
     // .populate({
     //   path: "comments",
@@ -269,7 +269,7 @@ const followingPost = asyncHandler(async (req, res) => {
     // get signed user posts
     const userPosts = await Post.find({ user: req.user._id }).populate(
       "user",
-      "username profile_pic"
+      "profile_pic firstName lastName"
     );
     // .populate({
     //   path: "comments",

@@ -4,8 +4,8 @@ const User = require("../models/user");
 const verifyToken = async (req, res) => {
   // res.send(req.query.token)
   const token = req.query.token;
-    // const { token } = req.body;
-    // console.log(req.body);
+  // const { token } = req.body;
+  // console.log(req.body);
 
   if (!token) {
     return res.status(404).json({
@@ -40,7 +40,7 @@ const verifyToken = async (req, res) => {
 
   res.status(200).json({
     success: true,
-    data: decodeToken.email,
+    email: decodeToken.email,
   });
 };
 

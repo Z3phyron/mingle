@@ -12,6 +12,7 @@ const protect = asyncHandler(async (req, res, next) => {
     try {
       // Get token from header
       token = req.headers.authorization.split(" ")[1];
+      // console.log(token + "tokrm")
 
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -20,6 +21,7 @@ const protect = asyncHandler(async (req, res, next) => {
       req.user = await User.findById(decoded.loggedInUser._id).select(
         "-password"
       );
+      console.log(res.user)
 
       next();
     } catch (error) {

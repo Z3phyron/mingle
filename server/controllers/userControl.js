@@ -1,11 +1,33 @@
 const User = require("../models/user");
-const router = require("express").Router();
-const bcrypt = require("bcrypt");
+
 const asyncHandler = require("express-async-handler");
+
+// get all users
+const allUsers = async (req, res) => {
+  try {
+    const findUsers = await User.find().select(
+      "profile_pic firstName lastName followers"
+    );
+    if (!findUsers)
+      return res.status(500).json({ message: "somthing went wrong !!" });
+    //return users without signed user
+
+    const randUsers = findUsers.filter(
+      (user) => user._id.toString() !== req.user._id.toString()
+    );
+    return res
+      .status(200)
+      .json(
+       randUsers
+      );
+  } catch (error) {
+    return res.status(500).json(error.message);
+  }
+};
 
 const updateUser = asyncHandler(async (req, res) => {
   const currentUser = req.params.id;
-  if (req.body.userId === currentUser || req.body.isAdmin) {
+  if (req.user._id.toString() === currentUser || req.body.isAdmin) {
     try {
       const user = await User.findByIdAndUpdate(currentUser, {
         $set: req.body,
@@ -26,7 +48,7 @@ const updateUser = asyncHandler(async (req, res) => {
 
 const deleteUser = asyncHandler(async (req, res) => {
   const currentUser = req.params.id;
-  if (req.body.userId === currentUser || req.body.isAdmin) {
+  if (req.user._id.toString() === currentUser || req.body.isAdmin) {
     try {
       await User.findByIdAndDelete(currentUser);
       res.status(200).json("Account has been deleted");
@@ -38,11 +60,10 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-
 const getFriends = asyncHandler(async (req, res) => {
   console.log(req.params.userId);
   try {
-    const currentUser = await User.findById(req.params.userId);
+    const currentUser = await User.findById(req.user._id.toString());
 
     console.log(currentUser);
     const friends = await Promise.all(
@@ -62,23 +83,34 @@ const getFriends = asyncHandler(async (req, res) => {
   }
 });
 
-
 const followUser = asyncHandler(async (req, res) => {
-  if (req.body.userId !== req.params.id) {
+  // console.log(req.body)
+  if (req.user._id.toString() !== req.body.id) {
     try {
-      const currentUser = await User.findById(req.body.userId);
-      const userToBeFollowed = await User.findById(req.params.id);
-      if (!userToBeFollowed.followers.includes(req.body.userId)) {
+      const currentUser = await User.findById(req.user._id.toString());
+      const userToBeFollowed = await User.findById(req.body.id);
+      if (!userToBeFollowed.followers.includes(req.user._id.toString())) {
         await userToBeFollowed.updateOne({
-          $push: { followers: req.body.userId },
+          $push: { followers: req.user._id.toString() },
         });
         await currentUser.updateOne({
-          $push: { following: req.params.id },
+          $push: { following: req.body.id },
         });
+        //  const friends = await currentUser.following;
+        //  console.log(friends);
         res.status(200).json("user has been followed");
-      } else {
-        res.status(403);
-        throw new Error("you are already following this user");
+      } else if (
+        userToBeFollowed.followers.includes(req.user._id.toString())
+      ) {
+        await userToBeFollowed.updateOne({
+          $pull: { following: req.user._id.toString() },
+        });
+        await currentUser.updateOne({
+          $pull: { followers: req.body.id },
+        });
+
+        
+        res.status(200).json("user has been unfollowed");
       }
     } catch (error) {
       res.status(403);
@@ -90,62 +122,62 @@ const followUser = asyncHandler(async (req, res) => {
   }
 });
 
-const unfollowUser = asyncHandler(async (req, res) => {
-  if (req.body.userId !== req.params.id) {
-    try {
-      const currentUser = await User.findById(req.body.userId);
-      const userToBeFollowed = await User.findById(req.params.id);
-      if (!userToBeFollowed.followers.includes(req.body.userId)) {
-        await userToBeFollowed.updateOne({
-          $pull: { following: req.body.userId },
-        });
-        await currentUser.updateOne({
-          $pull: { followers: req.params.id },
-        });
-        res.status(200).json("user has been unfollowed");
-      } else {
-        res.status(403);
-        throw new Error("you are already unfollowing this user");
-      }
-    } catch (error) {
-      res.status(403);
-      throw new Error(error);
-    }
-  } else {
-      res.status(403)
-      throw new Error('you cant unfollow urself dummy!!')
-  }
-});
+// const unfollowUser = asyncHandler(async (req, res) => {
+//   if (req.body.userId !== req.params.id) {
+//     try {
+//       const currentUser = await User.findById(req.body.userId);
+//       const userToBeFollowed = await User.findById(req.params.id);
+//       if (!userToBeFollowed.followers.includes(req.body.userId)) {
+//         await userToBeFollowed.updateOne({
+//           $pull: { following: req.body.userId },
+//         });
+//         await currentUser.updateOne({
+//           $pull: { followers: req.params.id },
+//         });
+//         res.status(200).json("user has been unfollowed");
+//       } else {
+//         res.status(403);
+//         throw new Error("you are already unfollowing this user");
+//       }
+//     } catch (error) {
+//       res.status(403);
+//       throw new Error(error);
+//     }
+//   } else {
+//     res.status(403);
+//     throw new Error("you cant unfollow urself dummy!!");
+//   }
+// });
 
 const getFriend = asyncHandler(async (req, res) => {
-    // console.log(req.params.userId);
-    try {
-      const currentUser = await User.findById(req.params.userId);
-      const friendId = await User.findById(req.params.id);
+  // console.log(req.params.userId);
+  try {
+    const currentUser = await User.findById(req.user._id.toString());
+    const friendId = await User.findById(req.params.id);
 
-      // console.log(currentUser);
-      // console.log(friendId);
-      
-      if (currentUser !== friendId) {
-         const friend = await currentUser.following
-           .populate("user", "userName profile_pic");
-      console.log(friend)
-      }
+    // console.log(currentUser);
+    // console.log(friendId);
 
-      
-     
-      res.status(200).json({ success: true, friend });
-    } catch (error) {
-      res.status(500);
-      throw new Error("server error", error);
+    if (currentUser !== friendId) {
+      const friend = await currentUser.following.populate(
+        "user",
+        "userName profile_pic"
+      );
+      console.log(friend);
     }
+
+    res.status(200).json({ success: true, friend });
+  } catch (error) {
+    res.status(500);
+    throw new Error("server error", error);
+  }
 });
 
 module.exports = {
   updateUser,
   deleteUser,
   followUser,
-  unfollowUser,
-    getFriends,
+  allUsers,
+  getFriends,
   getFriend,
 };

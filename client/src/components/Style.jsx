@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 export const Tab = styled.button`
   &.tabs {
-    padding: 10px 15px;
+    padding: 7px 15px;
     margin: 5px 0;
     cursor: pointer;
     display: flex;
@@ -15,8 +15,17 @@ export const Tab = styled.button`
     position: relative;
     outline: none;
     @media (max-width: 900px) {
-      padding: 10px 15px;
-      margin: 19px 0 0;
+      padding: 2px 15px;
+      margin: 19px 20px 0;
+    }
+    @media (max-width: 700px) {
+      padding: -40px 15px;
+      margin: 19px 20px 0;
+    }
+    @media (max-width: 600px) {
+      padding: 4px 10px;
+      margin: 10px 0 0;
+      font-size: 10px;
     }
     .icon {
       margin-right: 3px;
@@ -112,7 +121,8 @@ export const Menu = styled.div`
     @media (max-width: 900px) {
       font-size: 10px;
       right: 3%;
-      bottom: 20px;
+      bottom: 16vh;
+      
     }
 
     .icon {

@@ -1,0 +1,7 @@
+{
+    "zenMode.fullScreen": false,
+    "zenMode.hideStatusBar": false,
+    "zenMode.silentNotifications": false,
+    "gitlens.mode.statusBar.enabled": false,
+    "gitlens.mode.statusBar.alignment": "left"
+}

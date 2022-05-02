@@ -3,6 +3,6 @@ const router = express.Router();
 
 const verifyMail = require("../controllers/emailController");
 
-router.post("/verify", verifyMail);
+router.post("/verifyEmail", verifyMail);
 
 module.exports = router;

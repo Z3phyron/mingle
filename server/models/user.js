@@ -20,7 +20,7 @@ const userSchema = mongoose.Schema(
     },
     cover_pic: {
       type: String,
-      default: "",
+      default: "https://picsum.photos/id/124/367/267",
     },
     mobile: {
       type: Number,

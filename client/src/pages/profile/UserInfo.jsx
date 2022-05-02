@@ -1,18 +1,33 @@
 import React from "react";
 import styled from "styled-components";
 
-const UserInfo = () => {
+const UserInfo = (props) => {
+    const { user } = props;
+    const {
+      profile_pic,
+      bio,
+      cover_pic,
+      firstName,
+      lastName,
+      liveAt,
+      relationship,
+      verified,
+      email,
+    } = user.user;
   return (
     <Cont>
       <Card>
         <div className="header">Contact Info</div>
         <div className="info">
           <div className="title">Name:</div>
-          <div className="value">Damian Ricketts</div>
+          <div className="value">
+            {" "}
+            {firstName} {lastName}
+          </div>
         </div>
         <div className="info">
           <div className="title">Email:</div>
-          <div className="value">Z3phyrondevs@gmail.com</div>
+          <div className="value">{email}</div>
         </div>
         <div className="info">
           <div className="title">Phone:</div>
@@ -20,7 +35,7 @@ const UserInfo = () => {
         </div>
         <div className="info">
           <div className="title">Address:</div>
-          <div className="value">50 street, NewYork city</div>
+          <div className="value">{ liveAt}</div>
         </div>
         <div className="info">
           <div className="title">Website:</div>

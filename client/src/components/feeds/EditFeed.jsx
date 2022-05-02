@@ -1,21 +1,20 @@
 import { Avatar } from "@mui/material";
-import React, { useState, useEffect } from "react";
+import React, {useState} from "react";
 import styled from "styled-components";
 import { MdOutlinePermMedia } from "react-icons/md";
 import { BsEmojiSmileUpsideDown } from "react-icons/bs";
+import user from "../../assets/dp_4.jpg";
 import { useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { toast } from "react-toastify";
-import { createPost, getPosts, reset } from "../../features/posts/postSlice";
+import { editPost, reset } from "../../features/posts/postSlice";
 
-const CreatePost = (props) => {
-  const { user } = props;
-  // const { profile_pic } = user.user;
+const EditFeed = (props) => {
+  const { handleClose, post } = props;
 
   const [formData, setFormData] = useState({
-    author: "",
-    content: "",
-    images: [],
+    content: post.content,
+    images: post.images,
   });
 
   const { author, content, images } = formData;
@@ -37,28 +36,22 @@ const CreatePost = (props) => {
     if (!posts) {
       toast.error("Passwords do not match");
     } else {
-      const authorId = user?.user?._id;
-      console.log(authorId);
-      const PostData = {
-        author: authorId,
+      const id = post._id;
+      const userPost = {
         content,
         images,
       };
-      console.log(PostData);
-      dispatch(createPost(PostData));
+      console.log(id, userPost);
+      dispatch(editPost(id, userPost));
+      handleClose();
     }
   };
-
   return (
     <Cont onSubmit={handleSubmit}>
       <Box>
-        <Avatar alt="Remy Sharp" src={user?.user?.profile_pic} />
+        <Avatar alt="Remy Sharp" src={user} />
         <div className="input_field">
-          <textarea
-            name="content"
-            onChange={onChange}
-            value={content}
-          ></textarea>
+          <textarea name="" id=""></textarea>
         </div>
       </Box>
 
@@ -66,13 +59,7 @@ const CreatePost = (props) => {
         <Media>
           <div className="photo">
             <MdOutlinePermMedia className="icon" />
-            <input
-              type="file"
-              className="file"
-              name="images"
-              onChange={onChange}
-              value={images}
-            />
+            <input type="file" className="file" />
             <div className="text">Photo/Video</div>
           </div>
           <div className="feelings">
@@ -80,7 +67,9 @@ const CreatePost = (props) => {
             <div className="text">Feelings</div>
           </div>
         </Media>
-        <button type="submit">Send</button>
+        <button type="submit" onClick={handleClose}>
+          Send
+        </button>
       </Box2>
     </Cont>
   );
@@ -178,4 +167,4 @@ const Media = styled.div`
   }
 `;
 
-export default CreatePost;
+export default EditFeed;

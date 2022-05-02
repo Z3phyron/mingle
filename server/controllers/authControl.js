@@ -58,9 +58,14 @@ const registerUser = asyncHandler(async (req, res) => {
       msg: "Error sending mail",
     });
   } else {
+    const loggedInUser = await User.findOne({ email });
+    const token = tokenGenerator({
+      loggedInUser,
+    });
+    const user = await User.findById(loggedInUser._id).select("-password");
     res
       .status(201)
-      .json({ success: true, user: newUser, msg: "saved successfully" });
+      .json({ success: true, token, user: user, msg: "saved successfully" });
   }
 });
 
@@ -85,12 +90,15 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 
   const loggedInUser = await User.findById(oldUser._id).select("-password");
+  console.log(loggedInUser);
 
   const token = tokenGenerator({
     loggedInUser,
   });
 
-  res.status(201).json({ success: true, token });
+  const user = await User.findById(oldUser._id).select("-password");
+
+  res.status(201).json({ success: true, token, user: user });
 });
 
 const forgotPassword = asyncHandler(async (req, res) => {
@@ -134,55 +142,52 @@ const forgotPassword = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
 const resetPassword = asyncHandler(async (req, res) => {
-      const { email, password, confirmPassword } = req.body;
+  const { email, password, confirmPassword } = req.body;
 
-      if (!email || !password || !confirmPassword) {
-       res.status(400)
-          throw new Error("please fill in all fields")
-      } else if (!mailRegex.test(email)) {
-        res.status(400)
-        throw new Error("invalid email")
-    }
-    
-      const oldUser = await User.findOne({ email });
+  if (!email || !password || !confirmPassword) {
+    res.status(400);
+    throw new Error("please fill in all fields");
+  } else if (!mailRegex.test(email)) {
+    res.status(400);
+    throw new Error("invalid email");
+  }
 
-      if (!oldUser) {
-        return res
-          .status(400)
-          throw new Error("User with this email not found");
+  const oldUser = await User.findOne({ email });
+
+  if (!oldUser) {
+    return res.status(400);
+    throw new Error("User with this email not found");
+  }
+
+  if (password !== confirmPassword) {
+    res.status(400);
+    throw new Error("Passwords do not match");
+  }
+
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(password, salt);
+
+  const changedPassword = await User.findOneAndUpdate(
+    { email },
+    {
+      $set: {
+        password: hashedPassword,
+      },
     }
-    
-      if (password !== confirmPassword) {
-        res.status(400)
-       throw new Error("Passwords do not match");
-    }
-    
-      const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-    
-      const changedPassword = await User.findOneAndUpdate(
-        { email },
-        {
-          $set: {
-            password: hashedPassword,
-          },
-        }
-    );
-    
-    
-    if (changedPassword) {
-        res.status(200).json({
-            success: true,
-            msg: "Reset Successful",
-        });
-    } else {
-        res.status(500)
-        throw new Error("something went wrong")
-    }
+  );
+
+  if (changedPassword) {
+    const user = await User.findById(oldUser._id).select("-password");
+    res.status(200).json({
+      success: true,
+      user: user,
+      msg: "Reset Successful",
+    });
+  } else {
+    res.status(500);
+    throw new Error("something went wrong");
+  }
 });
 
 module.exports = {

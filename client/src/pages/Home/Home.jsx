@@ -1,18 +1,57 @@
-import React from 'react'
+import React, {useState, useEffect, useLayoutEffect} from 'react'
 import styled from "styled-components";
 import CreatePost from '../../components/feeds/CreatePost';
 import Feeds from '../../components/feeds/Feeds';
 import Friends from '../../components/friends/Friends';
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { getPosts, reset } from "../../features/posts/postSlice";
+import { getFriends, allUsers } from "../../features/users/userSlice";
 
-const Home = () => {
+const Home = (props) => {
+  const { user } = props
+ 
+  
+
+    const { posts, isLoading, isError, isSuccess, message } = useSelector(
+      (state) => state.post
+  );
+  
+  
+
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+  
+  useEffect(() => {
+    if (isError) {
+    console.log(message)
+  }
+
+  if (!user) {
+  navigate('/sign-in')
+    }
+    
+    dispatch(getPosts())
+    dispatch(allUsers())
+    dispatch(getFriends());
+    
+
+    return  () => {
+      dispatch(reset())
+    }
+}, [user, navigate, isError, message, dispatch])
+
+  // console.log(friends)
+  
   return (
     <Cont>
       <div className="feed">
-        <CreatePost />
-        <Feeds />
+        <CreatePost user={user} />
+        <Feeds user={user} posts={posts}/>
       </div>
      
-      <Friends/>
+      <Friends allUsers={allUsers} />
     </Cont>
   )
 }

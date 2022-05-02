@@ -1,12 +1,25 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { RiSearchLine } from "react-icons/ri";
 import Avatar from "@mui/material/Avatar";
 import user from "../../assets/dp_4.jpg";
 import Popper from "@mui/material/Popper";
+import { Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { SignOut, reset } from "../../features/auth/authSlice";
 
-const Navbar = () => {
+const Navbar = (props) => {
+  const { user } = props
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+
+    const signOut = () => {
+      dispatch(SignOut());
+      dispatch(reset());
+      navigate("/");
+    };
+  // const {firstName, lastName, profile_pic} = user?.user
   const [navbar, setNavbar] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -40,9 +53,15 @@ const Navbar = () => {
         </div>
       </Search>
       <User>
-        <Avatar src={user} className="avatar" onClick={handleClick} />
+        <Avatar
+          src={user?.user?.profile_pic}
+          className="avatar"
+          onClick={handleClick}
+        />
         <div className="user_info">
-          <h4 className="name">Damian Ricketts</h4>
+          <h4 className="name">
+            {user?.user?.firstName} {user?.user?.lastName}
+          </h4>
           <small>@Abyss_Returner</small>
         </div>
         <Popper id={id} open={open} anchorEl={anchorEl}>
@@ -50,7 +69,7 @@ const Navbar = () => {
             <li>
               <Link to="/">profile</Link>
             </li>
-            <li>
+            <li onClick={signOut}>
               <Link to="/">logout</Link>
             </li>
           </PopBox>

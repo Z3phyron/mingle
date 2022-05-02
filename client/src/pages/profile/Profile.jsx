@@ -11,7 +11,9 @@ import { IoClose } from "react-icons/io5";
 import Modal from "@mui/material/Modal";
 import Editprofile from "./Editprofile";
 
-const Profile = () => {
+const Profile = (props) => {
+    const { user } = props;
+    const { profile_pic, bio, cover_pic, firstName, lastName, liveAt, relationship, verified, email } = user.user;
   const [toggleState, setToggleState] = useState(1);
   const [open, setOpen] = useState(false);
 
@@ -28,9 +30,11 @@ const Profile = () => {
           <img src={cover} alt="" />
         </CoverPhoto>
         <User>
-          <Avatar alt="Remy Sharp" src={user} className="avatar" />
+          <Avatar alt="Remy Sharp" src={profile_pic} className="avatar" />
           <div className="user_info">
-            <h3 className="user_name">Damian Ricketts</h3>
+            <h3 className="user_name">
+              {firstName} {lastName}
+            </h3>
             <small className="handle">@abyss_returner</small>
           </div>
         </User>
@@ -76,13 +80,13 @@ const Profile = () => {
         <div
           className={toggleState === 1 ? "content  active-content" : "content"}
         >
-          <Feeds />
+          <Feeds user={user} />
         </div>
 
         <div
           className={toggleState === 2 ? "content  active-content" : "content"}
         >
-          <UserInfo />
+          <UserInfo user={user} />
         </div>
       </Content>
     </Cont>
@@ -107,6 +111,7 @@ const UserWraper = styled.div`
 
   @media screen and (max-width: 700px) {
     grid-template-columns: repeat(1, 1fr);
+    height: 20vh;
   }
 `;
 const CoverPhoto = styled.div`
@@ -132,7 +137,7 @@ const User = styled.div`
   bottom: 30px;
   left: 40px;
   @media screen and (max-width: 700px) {
-    bottom: 35px;
+    bottom: 10px;
     left: 30px;
   }
   .avatar {
@@ -141,8 +146,8 @@ const User = styled.div`
     border: 5px solid rgba(255, 255, 255, 0.18);
 
     @media screen and (max-width: 900px) {
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
     }
   }
   .user_info {
@@ -164,7 +169,7 @@ const ModalBox = styled.div`
   width: 60%;
   height: auto;
   /* From https://css.glass */
-  background: var(--light-blue);
+  background: var(--white);
   border-radius: 20px;
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(7.6px);

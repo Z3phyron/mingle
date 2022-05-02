@@ -1,21 +1,24 @@
 const express = require("express");
 const router = express.Router();
+const { protect } = require("../middlewares/authMiddleware");
 
 const {
-  updateUser,
-  deleteUser,
+  // updateUser,
+  // deleteUser,
   followUser,
-  unfollowUser,
+  allUsers,
   getFriends,
-  getFriend,
+  // getFriend,
 } = require("../controllers/userControl");
 
-router.put("/:id", updateUser);
-router.put("/:id/follow", followUser);
-router.put("/:id/unfollow", unfollowUser);
-router.delete("/:id", deleteUser);
-router.get("/:userId/friends", getFriends);
-router.get("/:userId/friends/", getFriend);
+router.get("/", protect, allUsers);
+// router.put("/:id", protect, updateUser);
+router.put("/followUser", protect, followUser);
+// router.put("/:id/unfollow", protect, unfollowUser);
+
+// router.delete("/:id", protect, deleteUser);
+router.get("/friends/:userId", protect, getFriends);
+// router.get("/:userId/friend/", protect, getFriend);
 // router.post("/", getFriends);
 
 module.exports = router;

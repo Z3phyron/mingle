@@ -9,7 +9,7 @@ const {
 const verifyTokenController = require("../controllers/verifyToken");
 
 router.post("/", registerUser);
-router.post("/login", loginUser);
+router.post("/SignIn", loginUser);
 router.post("/forgot-password", forgotPassword);
 router.get("/verifyToken", verifyTokenController);
 router.put("/reset-password", resetPassword);

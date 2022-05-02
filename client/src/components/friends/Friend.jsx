@@ -2,25 +2,37 @@ import { Avatar } from "@mui/material";
 import React, { useState } from "react";
 import styled from "styled-components";
 import user from "../../assets/dp_1.jpg";
-
+import { followUser } from "../../features/users/userSlice";
+import { useSelector, useDispatch } from "react-redux";
 
 const Friend = (props) => {
-  const [stat, setStat] = useState(false)
- 
+  const [stat, setStat] = useState(false);
 
-    const {time} = props
+  const dispatch = useDispatch();
+
+   const { user } = props;
+  // console.log(user);
+
+  const follow = () => {
+    dispatch(followUser(user?._id));
+  };
+
+ 
   return (
     <Cont>
       <div className="user">
-        <Avatar alt="Remy Sharp" src={user} />
-        <h3 className="user_name">Z3phyron Snides</h3>
+        {/* <Avatar alt="Remy Sharp" src={user?.profile_pic} /> */}
+        <h3 className="user_name">{user?.firstName} </h3>
       </div>
 
-          <div className="status">
-            {stat ? <div className="stat"></div> : <div className="time"> {time}</div> }
-              
-             
-          </div>
+      <div className="status">
+        <button onClick={follow}>follow</button>
+        {/* {stat ? (
+          <div className="stat"></div>
+        ) : (
+          <div className="time"> time</div>
+        )} */}
+      </div>
     </Cont>
   );
 };
@@ -64,15 +76,13 @@ const Cont = styled.div`
   }
 
   .time {
-      color: var(--gray);
-      font-size: 12px;
+    color: var(--gray);
+    font-size: 12px;
   }
 
   @media screen and (max-width: 700px) {
-      display: none;
+    display: none;
   }
 `;
-
-
 
 export default Friend;

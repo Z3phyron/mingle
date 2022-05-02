@@ -10,25 +10,51 @@ import WordLimit from "react-word-limit";
 import post from "../../assets/pexels-mikotoraw-photographer-3594262.jpg";
 import Popper from "@mui/material/Popper";
 import { Link } from "react-router-dom";
+import Modal from "@mui/material/Modal";
+import EditFeed from "./EditFeed";
+import { FiEdit, FiTrash } from "react-icons/fi";
+import { IoClose } from "react-icons/io5";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { deletePost, getPosts, reset } from "../../features/posts/postSlice";
 
-const Feed = () => {
+const Feed = (props) => {
+  const { post } = props;
+  // console.log(post?.content);
+
   const [liked, setLiked] = useState(true);
-      const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [images, setImages] = useState();
+  const [openModal, setOpenModal] = useState(false);
 
-      const handleClick = (event) => {
-        setAnchorEl(anchorEl ? null : event.currentTarget);
-      };
+  const handleModal = () => setOpenModal(!openModal);
 
-      const open = Boolean(anchorEl);
-      const id = open ? "simple-popper" : undefined;
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+
+  const deleteFeed = () => {
+    dispatch(deletePost(post._id));
+    dispatch(getPosts())
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
 
   return (
     <Card>
       <User>
         <div className="user">
-          <Avatar src={user} sx={{ width: 50, height: 50 }} />
+          <Avatar
+            src={post?.user?.profile_pic}
+            sx={{ width: 50, height: 50 }}
+          />
           <div className="user_info">
-            <h4 className="name">Damian Ricketts</h4>
+            <h4 className="name">user</h4>
             <small>@Abyss_Returner</small>
           </div>
         </div>
@@ -37,11 +63,28 @@ const Feed = () => {
           <HiOutlineDotsHorizontal className="icon" onClick={handleClick} />
           <Popper id={id} open={open} anchorEl={anchorEl}>
             <PopBox>
-              <li>
-                <Link to="/">Edit</Link>
+              <li onClick={handleModal}>
+                <Link to="/">
+                  <FiEdit className="icon" /> Edit
+                </Link>
+                <Modal
+                  open={openModal}
+                  onClose={handleModal}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                >
+                  <ModalBox>
+                    <div className="closeBtn" onClick={handleModal}>
+                      <IoClose className="icon" />
+                    </div>
+                    <EditFeed handleModal={handleModal} post={post} />
+                  </ModalBox>
+                </Modal>
               </li>
-              <li>
-                <Link to="/">Delete</Link>
+              <li onClick={deleteFeed}>
+                <Link to="/">
+                  <FiTrash className="icon" /> Delete
+                </Link>
               </li>
             </PopBox>
           </Popper>
@@ -49,15 +92,18 @@ const Feed = () => {
       </User>
 
       <Text>
-        <WordLimit limit={120}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Unde
-          recusandae voluptatem, tempora saepe libero labore molestias earum
-          odio similique quaerat.
-        </WordLimit>
+        {/* <WordLimit limit={120}> */}
+        {post?.content}
+        {/* </WordLimit> */}
       </Text>
-      <Image>
-        <img src={post} alt="post" />
-      </Image>
+
+      {images &&
+        images.map((i, index) => (
+          <Image>
+            <img src={post} alt="post" />
+          </Image>
+        ))}
+
       <Activities>
         {liked ? (
           <IoIosHeart className="icon active" />
@@ -68,7 +114,7 @@ const Feed = () => {
         <IoMdShare className="icon" />
       </Activities>
       <Comment>
-        <Avatar src={user} sx={{ width: 40, height: 40 }} />
+        <Avatar src={post?.user?.profile_pic} sx={{ width: 40, height: 40 }} />
         <div className="input_field">
           <input type="text" />
         </div>
@@ -129,7 +175,7 @@ const User = styled.div`
   }
 `;
 
-const Text = styled.div`
+const Text = styled.p`
   font-size: 13px;
   line-height: 120%;
   letter-spacing: 1px;
@@ -230,7 +276,6 @@ const Comment = styled.form`
   }
 `;
 
-
 const PopBox = styled.ul`
   width: auto;
   height: auto;
@@ -257,5 +302,50 @@ const PopBox = styled.ul`
   }
 `;
 
+const ModalBox = styled.div`
+  width: 60%;
+  height: auto;
+  /* From https://css.glass */
+  background: var(--light-blue);
+  border-radius: 20px;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(7.6px);
+  -webkit-backdrop-filter: blur(7.6px);
+  border: none;
+  outline: none;
+  position: absolute;
+  top: 50%;
+  /* bottom: 50%; */
+  left: 50%;
+  /* right: 50%; */
+  transform: translate(-50%, -50%);
+  padding: 8% 3% 3%;
+  position: relative;
+
+  .closeBtn {
+    background: var(--light-blue);
+    outline: none;
+    border: none;
+    border-radius: 3px;
+    font-size: 20px;
+    /* box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(7.6px);
+    -webkit-backdrop-filter: blur(7.6px); */
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--white);
+    z-index: 999;
+
+    .icon {
+      color: var(--white);
+    }
+  }
+`;
 
 export default Feed;
